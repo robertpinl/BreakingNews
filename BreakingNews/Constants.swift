@@ -8,10 +8,11 @@
 import Foundation
 
 struct K {
-    static let baseUrl = "https://newsapi.org/v2/top-headlines?country=us&"
+    static let baseUrl = "https://newsapi.org/v2/top-headlines?"
     static let apiKey = "apiKey=\(valueForAPIKey(named: "API_KEY"))"
     
     struct Segue {
-        static let detail = "goToDetail"
+        static let detail = "GoToDetail"
+        static let countrySelection = "GoToCountrySelection"
     }
 }

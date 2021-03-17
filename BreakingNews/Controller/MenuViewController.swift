@@ -8,10 +8,11 @@
 import UIKit
 import SDWebImage
 
-class MenuViewController: UITableViewController {
+class MenuViewController: UITableViewController, SelectCountryDelegate {
     
     var newsService = NewsAPI()
     var newsArray = [Article]()
+    var countryShort: String = "country=us&"
     var detailArticleURL: URL?
     
     
@@ -37,7 +38,7 @@ class MenuViewController: UITableViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: nil, image: UIImage(systemName: "list.bullet"), primaryAction: nil, menu: categoryMenu())
         
-        fetchNews(url: "\(K.baseUrl)\(K.apiKey)")
+        fetchNews(url: "\(K.baseUrl)\(countryShort)\(K.apiKey)")
     }
     
     //MARK: - Tableview Delegate and Data Source
@@ -96,34 +97,54 @@ class MenuViewController: UITableViewController {
             self.fetchNews(url: "\(K.baseUrl)\(K.apiKey)")
         }
         let business = UIAction(title: "Business") { (action) in
-            self.fetchNews(url: "\(K.baseUrl)category=business&\(K.apiKey)")
+            self.fetchNews(url: "\(K.baseUrl)\(self.countryShort)category=business&\(K.apiKey)")
         }
         let entertainment = UIAction(title: "Entertainment") { (action) in
-            self.fetchNews(url: "\(K.baseUrl)category=entertainment&\(K.apiKey)")
+            self.fetchNews(url: "\(K.baseUrl)\(self.countryShort)category=entertainment&\(K.apiKey)")
         }
         let health = UIAction(title: "Health") { (action) in
-            self.fetchNews(url: "\(K.baseUrl)category=health&\(K.apiKey)")
+            self.fetchNews(url: "\(K.baseUrl)\(self.countryShort)category=health&\(K.apiKey)")
         }
         let science = UIAction(title: "Science") { (action) in
-            self.fetchNews(url: "\(K.baseUrl)category=science&\(K.apiKey)")
+            self.fetchNews(url: "\(K.baseUrl)\(self.countryShort)category=science&\(K.apiKey)")
         }
         let sports = UIAction(title: "Sports") { (action) in
-            self.fetchNews(url: "\(K.baseUrl)category=sports&\(K.apiKey)")
+            self.fetchNews(url: "\(K.baseUrl)\(self.countryShort)category=sports&\(K.apiKey)")
         }
         let technology = UIAction(title: "Technology") { (action) in
-            self.fetchNews(url: "\(K.baseUrl)category=technology&\(K.apiKey)")
+            self.fetchNews(url: "\(K.baseUrl)\(self.countryShort)category=technology&\(K.apiKey)")
         }
         let categoryMenu = UIMenu(title: "Category", children: [topnews, business, entertainment, health, technology, science, sports])
         
         return categoryMenu
     }
     
+    //MARK: - Change Country
+    @IBAction func changeCountryPressed(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: K.Segue.countrySelection, sender: self)
+    }
+    
+    
     //MARK: - Prepare for segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destination = segue.destination as? DetailViewController {
-            destination.articleUrl = detailArticleURL
+        
+        if segue.identifier == K.Segue.detail {
+            if let destination = segue.destination as? DetailViewController {
+                destination.articleUrl = detailArticleURL
+            }
+        }
+        
+        if segue.identifier == K.Segue.countrySelection {
+            let destination = segue.destination as! CountrySelectionViewController
+            destination.delegate = self
         }
     }
+    
+    func didChangeCountry(country: Country) {
+        self.countryShort = "country=\(country.short)&"
+    }
+    
 }
+
 
 
