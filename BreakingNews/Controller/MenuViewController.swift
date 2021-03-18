@@ -15,14 +15,12 @@ class MenuViewController: UITableViewController, SelectCountryDelegate {
     var countryShort: String = "country=us&"
     var detailArticleURL: URL?
     
-    
-    //MARK: - Time and date formatters
+    //MARK: Time and date formatters
     let stringDateFormatter: DateFormatter = {
         let sdf = DateFormatter()
         sdf.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ"
         return sdf
     }()
-    
     let dateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.timeStyle = .short
@@ -94,7 +92,7 @@ class MenuViewController: UITableViewController, SelectCountryDelegate {
     func categoryMenu() -> UIMenu {
         
         let topnews = UIAction(title: "Top News") { (action) in
-            self.fetchNews(url: "\(K.baseUrl)\(K.apiKey)")
+            self.fetchNews(url: "\(K.baseUrl)\(self.countryShort)\(K.apiKey)")
         }
         let business = UIAction(title: "Business") { (action) in
             self.fetchNews(url: "\(K.baseUrl)\(self.countryShort)category=business&\(K.apiKey)")
@@ -119,11 +117,15 @@ class MenuViewController: UITableViewController, SelectCountryDelegate {
         return categoryMenu
     }
     
-    //MARK: - Change Country
+    //MARK: - Change Country 
     @IBAction func changeCountryPressed(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: K.Segue.countrySelection, sender: self)
     }
     
+    func didChangeCountry(country: Country) {
+        self.countryShort = "country=\(country.short)&"
+        fetchNews(url: "\(K.baseUrl)\(countryShort)\(K.apiKey)")
+    }
     
     //MARK: - Prepare for segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -139,11 +141,6 @@ class MenuViewController: UITableViewController, SelectCountryDelegate {
             destination.delegate = self
         }
     }
-    
-    func didChangeCountry(country: Country) {
-        self.countryShort = "country=\(country.short)&"
-    }
-    
 }
 
 
