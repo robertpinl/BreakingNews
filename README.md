@@ -1,4 +1,4 @@
-<img src="https://github.com/robertpinl/BreakingNews/blob/main/ReadmeAssets/BreakingNewsLogo.png" width="" height="50"/>
+<img src="https://github.com/robertpinl/BreakingNews/blob/main/ReadmeAssets/BreakingNewsLogo.png" width="" height="60"/>
 
 News app using  the API from http://newsapi.org/. 
 * MVC Design Pattern
