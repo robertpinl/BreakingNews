@@ -1,16 +1,25 @@
 //
-//  NewsModel.swift
+//  NewsData.swift
 //  BreakingNews
 //
-//  Created by Robert Pinl on 08.02.2021.
+//  Created by Robert P on 30.01.2021.
 //
 
-import UIKit
+import Foundation
 
-struct Article {
+struct NewsModel: Codable {
+    var status: String
+    var articles: [Article]
+}
+
+struct Article: Codable {
     var title: String
     var publishedAt: String
     var url: URL?
-    var image: URL?
-    var source: String
+    var urlToImage: URL?
+    var source: Source
+}
+
+struct Source: Codable {
+    var name: String
 }

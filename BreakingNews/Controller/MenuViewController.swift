@@ -10,7 +10,7 @@ import SDWebImage
 
 class MenuViewController: UITableViewController, SelectCountryDelegate {
     
-    var newsService = NewsAPI()
+    var newsService = NewsAPIManager()
     var newsArray = [Article]()
     var countryShort: String = "country=us&"
     var detailArticleURL: URL?
@@ -52,8 +52,8 @@ class MenuViewController: UITableViewController, SelectCountryDelegate {
         let publishedAtDate = stringDateFormatter.date(from: newsArray[indexPath.row].publishedAt)
         cell.newsDate.text = dateFormatter.string(from: publishedAtDate!)
         
-        cell.newsSource.text = newsArray[indexPath.row].source
-        cell.newsImage.sd_setImage(with: newsArray[indexPath.row].image, placeholderImage: UIImage(named: "default"), options: .highPriority) { (image, error, cacheType, url) in
+        cell.newsSource.text = newsArray[indexPath.row].source.name
+        cell.newsImage.sd_setImage(with: newsArray[indexPath.row].urlToImage, placeholderImage: UIImage(named: "default"), options: .highPriority) { (image, error, cacheType, url) in
             if error != nil {
                 print(error.debugDescription)
                 return
@@ -78,12 +78,17 @@ class MenuViewController: UITableViewController, SelectCountryDelegate {
     //MARK: - Update UI
     func fetchNews(url: String) {
         newsArray = []
-        newsService.fetchAPI(with: url) { (news) in
-            DispatchQueue.main.async {
-                for i in news {
-                    self.newsArray.append(Article(title: i.title, publishedAt: i.publishedAt, url: i.url, image: i.urlToImage, source: i.source.name))
-                    self.tableView.reloadData()
+        newsService.fetchAPI(with: url) { [weak self] result in
+            switch result {
+            case .success(let articles):
+                for article in articles {
+                    DispatchQueue.main.async {
+                        self?.newsArray.append(Article(title: article.title, publishedAt: article.publishedAt, url: article.url, urlToImage: article.urlToImage, source: article.source))
+                        self?.tableView.reloadData()
+                    }
                 }
+            case .failure(let error):
+                print(error.localizedDescription)
             }
         }
     }
@@ -117,7 +122,7 @@ class MenuViewController: UITableViewController, SelectCountryDelegate {
         return categoryMenu
     }
     
-    //MARK: - Change Country 
+    //MARK: - Change Country
     @IBAction func changeCountryPressed(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: K.Segue.countrySelection, sender: self)
     }

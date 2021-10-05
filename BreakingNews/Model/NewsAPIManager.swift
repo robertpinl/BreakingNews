@@ -7,21 +7,21 @@
 
 import Foundation
 
-struct NewsAPI {
+struct NewsAPIManager {
     
-    func fetchAPI(with urlString: String, completion: @escaping ([Articles]) -> Void) {
+    func fetchAPI(with urlString: String, completion: @escaping (Result<[Article], Error>) -> Void) {
         if let url = URL(string: urlString) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { (data, response, error) in
                 if error != nil {
-                    print(error.debugDescription)
+                    completion(.failure(error!))
                     return
                 }
                 if let safeData = data {
                     let decoder = JSONDecoder()
                     do {
-                        let news = try decoder.decode(NewsData.self, from: safeData).articles
-                        completion(news)
+                        let articles = try decoder.decode(NewsModel.self, from: safeData).articles
+                        completion(.success(articles))
                     } catch {
                         print(error)
                     }
