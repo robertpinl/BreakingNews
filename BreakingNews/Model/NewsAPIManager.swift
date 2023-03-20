@@ -9,7 +9,16 @@ import Foundation
 
 struct NewsAPIManager {
     
-    func fetchAPI(with urlString: String, completion: @escaping (Result<[Article], Error>) -> Void) {
+    enum NetworkError: Error {
+        case noServerResponse
+//        case
+    }
+    
+    func fetchAPI() async throws-> [Article] {
+        
+    }
+    
+    func fetchAPI(urlcompletion: @escaping (Result<[Article], Error>) -> Void) {
         if let url = URL(string: urlString) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) { (data, response, error) in
@@ -30,6 +39,11 @@ struct NewsAPIManager {
             task.resume()
         }
     }
+}
+
+enum ApiError: Error {
+    case invalidURL
+    case missingData
 }
 
 
