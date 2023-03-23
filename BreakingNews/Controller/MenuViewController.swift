@@ -10,7 +10,7 @@ import SDWebImage
 
 class MenuViewController: UITableViewController, SelectCountryDelegate {
     
-    var newsService = NewsAPIManager()
+    let apiService = ApiManager()
     var newsArray = [Article]()
     var countryShort: String = "country=us&"
     var detailArticleURL: URL?
@@ -77,18 +77,15 @@ class MenuViewController: UITableViewController, SelectCountryDelegate {
     
     //MARK: - Update UI
     func fetchNews(url: String) {
-        newsArray = []
-        newsService.fetchAPI(with: url) { [weak self] result in
-            switch result {
-            case .success(let articles):
+        Task {
+            do {
+                let articles = try await apiService.fetchAPI()
                 for article in articles {
-                    DispatchQueue.main.async {
-                        self?.newsArray.append(Article(title: article.title, publishedAt: article.publishedAt, url: article.url, urlToImage: article.urlToImage, source: article.source))
-                        self?.tableView.reloadData()
-                    }
+                    self.newsArray.append(Article(title: article.title, publishedAt: article.publishedAt, url: article.url, urlToImage: article.urlToImage, source: article.source))
+                    self.tableView.reloadData()
                 }
-            case .failure(let error):
-                print(error.localizedDescription)
+            } catch let error {
+                print("Error: \(error)")
             }
         }
     }
