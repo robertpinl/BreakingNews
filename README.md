@@ -10,3 +10,5 @@ Breaking News is a mobile app that provides users with up-to-date and reliable n
 <img src="https://github.com/robertpinl/BreakingNews/blob/main/ReadmeAssets/BreakingNewsScreenshot1.png" width="" height="450"/>
 <img src="https://github.com/robertpinl/BreakingNews/blob/main/ReadmeAssets/BreakingNewsScreenshot2.png" width="" height="450"/>
 
+## License
+Currency Converter is available under the MIT license. See the LICENSE file for more info.
